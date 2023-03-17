@@ -1,6 +1,8 @@
 package com.zoomba.wijklogger
 
 import android.util.Log
+import com.zoomba.wijklogger.WijkLogger.LogLevel
+import com.zoomba.wijklogger.WijkLogger.LogLevel.*
 
 class NativeWijkLogger : WijkLogger {
 
@@ -13,11 +15,11 @@ class NativeWijkLogger : WijkLogger {
         if (!WijkLogger.enabledLogLevels.contains(level)) return
 
         when (level) {
-            LogLevel.VERBOSE -> Log.v(tag, msg)
-            LogLevel.DEBUG -> Log.d(tag, msg)
-            LogLevel.INFO -> Log.i(tag, msg)
-            LogLevel.WARN -> Log.w(tag, msg)
-            LogLevel.ERROR -> Log.e(tag, msg, throwable)
+            VERBOSE -> Log.v(tag, msg)
+            DEBUG -> Log.d(tag, msg)
+            INFO -> Log.i(tag, msg)
+            WARN -> Log.w(tag, msg)
+            ERROR -> Log.e(tag, msg, throwable)
         }
     }
 }
