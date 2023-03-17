@@ -73,6 +73,11 @@ interface WijkLogger {
         companion object {
             val values = values()
 
+            /**
+             * Get set only including the specified level + the ones "below" it. (The visual order of the enum values)
+             * e.g. upTo(WARN) will include ERROR and WARN
+             * e.g. upTo(VERBOSE) will include all levels, since it's the "highest"
+             */
             fun upTo(level: LogLevel): HashSet<LogLevel> =
                 values.mapNotNull {
                     it.takeIf { it.ordinal >= level.ordinal }
