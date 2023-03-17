@@ -22,7 +22,6 @@ fun Any.logError(throwable: Throwable? = null, tag: String = resolveTag(), lazyM
     logInstance.log(lazyMsg(), ERROR, throwable, tag)
 
 
-
 /**
  * Intended to be used by extension functions (logInfo,logDebug etc), use those instead where applicable
  */
@@ -32,7 +31,7 @@ private var logInstance: WijkLogger = WijkLogger.DEFAULT_LOGGER
 interface WijkLogger {
 
     companion object {
-        val DEFAULT_LOGGER = NativeWijkLogger()
+        val DEFAULT_LOGGER by lazy { NativeWijkLogger() }
 
         var enabledLogLevels = hashSetOf<LogLevel>()
             private set
