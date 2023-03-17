@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "WijkLogger"
-include ':app'
 include ':wijklogger'
+include ':commonutil'
