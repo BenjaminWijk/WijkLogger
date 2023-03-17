@@ -74,7 +74,7 @@ interface WijkLogger {
             val values = values()
 
             fun upTo(level: LogLevel): HashSet<LogLevel> = values.mapNotNull {
-                it.takeIf { it.ordinal <= level.ordinal }
+                it.takeIf { it.ordinal >= level.ordinal }
             }.toHashSet()
         }
     }
