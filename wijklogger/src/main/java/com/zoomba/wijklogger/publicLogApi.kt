@@ -7,47 +7,48 @@ import com.zoomba.wijklogger.WijkLogger.LoggerTag
 //msg function -> we only create the string when needed
 //TODO: does not work when used in global functions. add non-extension versions of the log for those? might be confusing.
 fun Any.logVerbose(tag: String = resolveTag(), lazyMsg: () -> String) =
-    logInstance.log(lazyMsg(), VERBOSE, tag = tag)
+    wijkLogInstance.log(lazyMsg(), VERBOSE, tag = tag)
 
 fun Any.logDebug(tag: String = resolveTag(), lazyMsg: () -> String) =
-    logInstance.log(lazyMsg(), DEBUG, tag = tag)
+    wijkLogInstance.log(lazyMsg(), DEBUG, tag = tag)
 
 fun Any.logInfo(tag: String = resolveTag(), lazyMsg: () -> String) =
-    logInstance.log(lazyMsg(), INFO, tag = tag)
+    wijkLogInstance.log(lazyMsg(), INFO, tag = tag)
 
 fun Any.logWarn(tag: String = resolveTag(), lazyMsg: () -> String) =
-    logInstance.log(lazyMsg(), WARN, tag = tag)
+    wijkLogInstance.log(lazyMsg(), WARN, tag = tag)
 
 fun Any.logError(throwable: Throwable? = null, tag: String = resolveTag(), lazyMsg: () -> String) =
-    logInstance.log(lazyMsg(), ERROR, throwable, tag)
+    wijkLogInstance.log(lazyMsg(), ERROR, throwable, tag)
 
 
 /**
  * Intended to be used by extension functions (logInfo,logDebug etc), use those instead where applicable
  */
-
-private var logInstance: WijkLogger = WijkLogger.DEFAULT_LOGGER
+var wijkLogInstance: WijkLogger = WijkLogger.DEFAULT_LOGGER
+    private set
 
 interface WijkLogger {
 
     companion object {
-        val DEFAULT_LOGGER by lazy { NativeWijkLogger() }
+        val DEFAULT_LOGGER = NativeWijkLogger()
+        private val DEFAULT_LOG_LEVEL = LogLevel.upTo(DEBUG)
 
-        var enabledLogLevels = hashSetOf<LogLevel>()
-            private set
+        fun setLogger(logger: WijkLogger) {
+            wijkLogInstance = logger
+        }
+
+        private var enabledLogLevels = DEFAULT_LOG_LEVEL
+
+        fun levelEnabled(level: LogLevel): Boolean = enabledLogLevels.contains(level)
+        fun levelDisabled(level: LogLevel): Boolean = !levelEnabled(level)
 
         fun setLogLevel(level: LogLevel) {
-            enabledLogLevels = LogLevel.values.mapNotNull {
-                it.takeIf { it.ordinal >= level.ordinal }
-            }.toHashSet()
+            enabledLogLevels = LogLevel.upTo(level)
         }
 
         fun setSpecificLogLevels(vararg levels: LogLevel) {
             enabledLogLevels = hashSetOf(*levels)
-        }
-
-        fun setLogger(logger: WijkLogger) {
-            logInstance = logger
         }
     }
 
@@ -71,6 +72,10 @@ interface WijkLogger {
 
         companion object {
             val values = values()
+
+            fun upTo(level: LogLevel): HashSet<LogLevel> = values.mapNotNull {
+                it.takeIf { it.ordinal <= level.ordinal }
+            }.toHashSet()
         }
     }
 }

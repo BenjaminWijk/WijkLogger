@@ -12,7 +12,7 @@ class NativeWijkLogger : WijkLogger {
         throwable: Throwable?,
         tag: String
     ) {
-        if (!WijkLogger.enabledLogLevels.contains(level)) return
+        if (WijkLogger.levelDisabled(level)) return
 
         when (level) {
             VERBOSE -> Log.v(tag, msg)
